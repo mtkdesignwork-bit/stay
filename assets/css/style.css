@@ -3487,6 +3487,111 @@ select.field__control {
 }
 
 /* =========================================
+   CREDITS：写真について
+   宿ごとに「写真の内容」と「撮影者（Unsplashの元の写真へのリンク）」を1行ずつ並べる
+========================================= */
+.credits {
+  padding: 56px 0 96px;
+}
+
+/* page-head__inner で消える見出しの下の余白を戻す */
+.credits__head {
+  margin-bottom: 56px;
+}
+
+.credits__inline-link {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.credits__note {
+  font-size: 13px;
+  color: var(--color-text-sub);
+}
+
+.credits__group + .credits__group {
+  margin-top: 48px;
+}
+
+.credits__heading {
+  margin-bottom: 12px;
+  font-family: var(--font-mincho);
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+}
+
+.credits__list {
+  border-top: 1px solid var(--color-line);
+}
+
+.credits__item {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 24px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--color-line);
+  font-size: 14px;
+}
+
+.credits__link,
+.credits__ai {
+  /* 2行に折り返したときも右にそろえる */
+  margin-left: auto;
+  font-family: var(--font-en);
+  font-size: 16px;
+  letter-spacing: 0.04em;
+  color: var(--color-text-sub);
+}
+
+.credits__ai {
+  font-family: var(--font-sans);
+  font-size: 13px;
+}
+
+.credits__link {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  transition: opacity 0.3s;
+}
+
+.credits__link:hover {
+  opacity: 0.6;
+}
+
+@media (min-width: 900px) {
+  .credits {
+    padding: 112px 0 160px;
+  }
+
+  .credits__head {
+    margin-bottom: 80px;
+  }
+
+  /* 見出しの下ではなく、リード文の下にそろえる */
+  .credits__note {
+    grid-column: 2;
+  }
+
+  /* 宿の名前を左、一覧を右 */
+  .credits__group {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 24px;
+  }
+
+  .credits__group + .credits__group {
+    margin-top: 64px;
+  }
+
+  .credits__heading {
+    padding-top: 14px;
+  }
+}
+
+/* =========================================
    フッター
 ========================================= */
 .footer {
