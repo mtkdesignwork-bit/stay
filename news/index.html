@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>お知らせ | NAGI</title>
+  <meta name="description" content="NAGIからのお知らせ。季節のプランや施設情報、営業のご案内をお届けします。">
+  <!-- LINEやSNSでURLを共有したときのカード -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="NAGI">
+  <meta property="og:title" content="お知らせ | NAGI">
+  <meta property="og:description" content="NAGIからのお知らせ。季節のプランや施設情報、営業のご案内をお届けします。">
+  <meta property="og:url" content="https://stay-roan.vercel.app/news/">
+  <meta property="og:image" content="https://stay-roan.vercel.app/assets/images/ogp/news.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- フォントは日本語だとファイルが多く重いので、画面に最初の表示が出てから main.js で読み込む（それまでは端末の書体で表示） -->
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Noto+Sans+JP:wght@300;400&family=Shippori+Mincho:wght@400&display=swap"></noscript>
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <script src="../assets/js/main.js" defer></script>
+</head>
+<body>
+
+  <!-- ===== 共通ヘッダー ===== -->
+  <header class="header header--overlay js-header">
+    <div class="header__inner">
+      <a class="header__logo" href="../">
+        <span class="header__logo-en">NAGI</span>
+        <span class="header__logo-ja">凪</span>
+      </a>
+
+      <nav class="gnav" id="gnav" aria-label="メインメニュー">
+        <ul class="gnav__list">
+          <li class="gnav__item">
+            <a class="gnav__link" href="../concept/">
+              <span class="gnav__en">CONCEPT</span>
+              <span class="gnav__ja">コンセプト</span>
+            </a>
+          </li>
+          <li class="gnav__item">
+            <a class="gnav__link" href="../stays/">
+              <span class="gnav__en">STAYS</span>
+              <span class="gnav__ja">宿一覧</span>
+            </a>
+          </li>
+          <li class="gnav__item">
+            <a class="gnav__link" href="./" aria-current="page">
+              <span class="gnav__en">NEWS</span>
+              <span class="gnav__ja">お知らせ</span>
+            </a>
+          </li>
+          <li class="gnav__item">
+            <a class="gnav__link" href="../guide/">
+              <span class="gnav__en">GUIDE</span>
+              <span class="gnav__ja">ご利用案内</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <a class="header__reserve" href="../reserve/">予約する</a>
+
+      <button class="menu-btn" type="button" aria-controls="gnav" aria-expanded="false" aria-label="メニューを開く">
+        <span class="menu-btn__line"></span>
+        <span class="menu-btn__line"></span>
+      </button>
+    </div>
+  </header>
+
+  <main class="main">
+
+    <!-- 1. FV（写真は高さ約50%。すぐ下に絞り込みと一覧がのぞく） -->
+    <section class="page-hero page-hero--half js-page-hero">
+      <div class="page-hero__media">
+        <img src="../assets/images/news/hero.webp" srcset="../assets/images/news/hero-750.webp 750w, ../assets/images/news/hero-1080.webp 1080w, ../assets/images/news/hero.webp 1600w" sizes="100vw" fetchpriority="high" alt="色づいた木々のあいだを抜ける森の小径" width="1600" height="1067">
+      </div>
+      <h1 class="page-hero__title">
+        <span class="page-hero__title-en">NEWS</span>
+        <span class="page-hero__title-ja">お知らせ</span>
+      </h1>
+      <p class="page-hero__catch">
+        <span class="page-hero__catch-line">季節のたよりを、</span>
+        <span class="page-hero__catch-line">宿からお届けします。</span>
+      </p>
+    </section>
+
+    <!-- パンくずリスト -->
+    <nav class="breadcrumb" aria-label="パンくずリスト">
+    <ol class="breadcrumb__list">
+      <li class="breadcrumb__item"><a href="../">TOP</a></li>
+      <li class="breadcrumb__item" aria-current="page">お知らせ</li>
+    </ol>
+    </nav>
+
+
+    <section class="news section">
+      <div class="section__inner">
+
+        <!-- 2. 絞り込み（カテゴリー。1つだけ選べる。URLの ?cat= でも指定できる） -->
+        <div class="filter js-filter" data-param="cat">
+          <p class="filter__label" id="filter-label">カテゴリーで選ぶ</p>
+          <ul class="filter__list" role="group" aria-labelledby="filter-label">
+            <li><button class="filter__btn js-filter-btn" type="button" data-value="all" aria-pressed="true">すべて</button></li>
+            <li><button class="filter__btn js-filter-btn" type="button" data-value="info" aria-pressed="false">お知らせ</button></li>
+            <li><button class="filter__btn js-filter-btn" type="button" data-value="plan" aria-pressed="false">季節のプラン</button></li>
+            <li><button class="filter__btn js-filter-btn" type="button" data-value="facility" aria-pressed="false">施設情報</button></li>
+          </ul>
+          <p class="filter__count" aria-live="polite"><span class="filter__num js-filter-count">6</span>件</p>
+        </div>
+
+        <!-- 3. お知らせの一覧（新しい順） -->
+        <ul class="news-list">
+          <li class="news-list__item js-filter-item" data-tags="facility">
+            <a class="news-list__link" href="setouchi-open/">
+              <time class="news-list__date" datetime="2026-10-15">2026.10.15</time>
+              <span class="news-list__cat">施設情報</span>
+              <span class="news-list__title">瀬戸内に新しい宿がオープンしました</span>
+            </a>
+          </li>
+          <li class="news-list__item js-filter-item" data-tags="plan">
+            <a class="news-list__link" href="winter-sauna-plan/">
+              <time class="news-list__date" datetime="2026-10-01">2026.10.01</time>
+              <span class="news-list__cat">季節のプラン</span>
+              <span class="news-list__title">冬季限定「サウナ貸切プラン」の受付を開始しました</span>
+            </a>
+          </li>
+          <li class="news-list__item js-filter-item" data-tags="info">
+            <a class="news-list__link" href="new-year-holidays/">
+              <time class="news-list__date" datetime="2026-09-20">2026.09.20</time>
+              <span class="news-list__cat">お知らせ</span>
+              <span class="news-list__title">年末年始の営業について</span>
+            </a>
+          </li>
+          <li class="news-list__item js-filter-item" data-tags="plan">
+            <a class="news-list__link" href="aso-stargazing/">
+              <time class="news-list__date" datetime="2026-09-05">2026.09.05</time>
+              <span class="news-list__cat">季節のプラン</span>
+              <span class="news-list__title">阿蘇で「星を見る夜」を開催します</span>
+            </a>
+          </li>
+          <li class="news-list__item js-filter-item" data-tags="facility">
+            <a class="news-list__link" href="yatsugatake-sauna-renewal/">
+              <time class="news-list__date" datetime="2026-08-20">2026.08.20</time>
+              <span class="news-list__cat">施設情報</span>
+              <span class="news-list__title">八ヶ岳のサウナ小屋をリニューアルしました</span>
+            </a>
+          </li>
+          <li class="news-list__item js-filter-item" data-tags="info">
+            <a class="news-list__link" href="yanbaru-winter-booking/">
+              <time class="news-list__date" datetime="2026-08-01">2026.08.01</time>
+              <span class="news-list__cat">お知らせ</span>
+              <span class="news-list__title">やんばるの冬休み期間のご予約受付を開始しました</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== 共通フッター ===== -->
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__brand">
+        <a class="footer__logo" href="../">NAGI</a>
+        <p class="footer__catch">心が凪ぐ場所へ</p>
+      </div>
+
+      <div class="footer__contact">
+        <h2 class="footer__heading">CONTACT</h2>
+        <address class="footer__address">
+          <dl class="footer__contact-list">
+            <div class="footer__contact-row">
+              <dt>TEL</dt>
+              <dd>
+                <a href="tel:0000000000">00-0000-0000</a>
+                <span class="footer__note">10:00〜18:00（年中無休）</span>
+              </dd>
+            </div>
+            <div class="footer__contact-row">
+              <dt>MAIL</dt>
+              <dd><a href="mailto:info@nagi-stay.example">info@nagi-stay.example</a></dd>
+            </div>
+          </dl>
+          <p class="footer__note">ご予約は<a class="footer__inline-link" href="../reserve/">予約フォーム</a>から承ります。</p>
+        </address>
+      </div>
+    </div>
+
+    <p class="footer__demo">このサイトは、Webデザインのポートフォリオとして制作した架空の宿のサイトです。実在の施設・団体とは関係ありません。予約フォームから実際の予約は行われません。</p>
+
+    <p class="footer__copy"><small>&copy; 2026 NAGI</small><small class="footer__credit">Photos: <a href="https://unsplash.com/" target="_blank" rel="noopener">Unsplash</a></small></p>
+  </footer>
+
+</body>
+</html>

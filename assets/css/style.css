@@ -1,0 +1,3614 @@
+@charset "UTF-8";
+
+/* =========================================
+   変数
+========================================= */
+:root {
+  /* 色：生成り・墨・苔のアースカラー */
+  --color-bg: #f7f5f0;
+  --color-text: #3d3d3b;
+  --color-text-sub: #6e6d69;
+  --color-accent: #4f5d4b;
+  --color-line: #d9d5ca;
+  --color-dark: #2f312b;
+  --color-dark-text: #e9e5dc;
+  --color-dark-sub: #b4afa4;
+  --color-dark-line: #4a4c44;
+  /* 入力エラー（赤を強くせず、土の色に寄せる） */
+  --color-error: #9a4636;
+
+  /* 書体 */
+  --font-en: "Cormorant Garamond", serif;
+  --font-mincho: "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif;
+  --font-sans: "Noto Sans JP", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+
+  /* レイアウト */
+  --header-h: 64px;
+  --inner: 1200px;
+  --gutter: 20px;
+}
+
+@media (min-width: 900px) {
+  :root {
+    --header-h: 88px;
+    --gutter: 40px;
+  }
+}
+
+/* =========================================
+   ベース
+========================================= */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 1.9;
+  letter-spacing: 0.06em;
+  -webkit-font-smoothing: antialiased;
+}
+
+@media (min-width: 900px) {
+  body {
+    font-size: 15px;
+  }
+}
+
+h1, h2, h3, p, ul, address {
+  margin: 0;
+}
+
+ul {
+  padding: 0;
+  list-style: none;
+}
+
+address {
+  font-style: normal;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+body.is-menu-open {
+  overflow: hidden;
+}
+
+/* hidden 属性は、display を指定した要素でも必ず隠す（予約フォームの画面切り替えなど） */
+[hidden] {
+  display: none !important;
+}
+
+/* ページ内リンクはゆっくりスクロール（動きを減らす設定の人には使わない） */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* =========================================
+   ヘッダー
+========================================= */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+/* 背景のぼかしは疑似要素に持たせる（header本体に付けるとスマホメニューが header 内に閉じ込められるため） */
+.header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-color: rgba(247, 245, 240, 0.92);
+  backdrop-filter: blur(8px);
+  transition: opacity 0.6s;
+}
+
+.header__inner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  max-width: var(--inner);
+  height: var(--header-h);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+.header__logo {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-right: auto;
+}
+
+.header__logo-en {
+  font-family: var(--font-en);
+  font-size: 28px;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  line-height: 1;
+}
+
+.header__logo-ja {
+  font-family: var(--font-mincho);
+  font-size: 13px;
+  color: var(--color-text-sub);
+}
+
+.header__reserve {
+  padding: 8px 18px;
+  border: 1px solid var(--color-text);
+  font-family: var(--font-mincho);
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.header__reserve:hover {
+  background-color: var(--color-text);
+  color: var(--color-bg);
+}
+
+/* ナビ（スマホ：全画面メニュー） */
+.gnav {
+  position: fixed;
+  inset: var(--header-h) 0 0;
+  display: flex;
+  justify-content: center;
+  padding-top: 48px;
+  background-color: var(--color-bg);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s, visibility 0.4s;
+}
+
+.is-menu-open .gnav {
+  opacity: 1;
+  visibility: visible;
+}
+
+.gnav__list {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  text-align: center;
+}
+
+.gnav__link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.gnav__en {
+  font-family: var(--font-en);
+  font-size: 26px;
+  letter-spacing: 0.16em;
+  line-height: 1.2;
+}
+
+.gnav__ja {
+  font-family: var(--font-mincho);
+  font-size: 11px;
+  color: var(--color-text-sub);
+}
+
+.gnav__link[aria-current="page"] .gnav__en {
+  color: var(--color-accent);
+}
+
+/* ハンバーガー */
+.menu-btn {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: inherit; /* iPhoneではボタンの文字色が青になるため、ヘッダーの色を引き継ぐ */
+  cursor: pointer;
+}
+
+.menu-btn__line {
+  position: absolute;
+  left: 8px;
+  width: 24px;
+  height: 1px;
+  background-color: var(--color-text);
+  transition: transform 0.3s;
+}
+
+.menu-btn__line:nth-child(1) {
+  top: 16px;
+}
+
+.menu-btn__line:nth-child(2) {
+  top: 23px;
+}
+
+.is-menu-open .menu-btn__line:nth-child(1) {
+  transform: translateY(3.5px) rotate(30deg);
+}
+
+.is-menu-open .menu-btn__line:nth-child(2) {
+  transform: translateY(-3.5px) rotate(-30deg);
+}
+
+/* ナビ（PC：横並び） */
+@media (min-width: 900px) {
+  .header__inner {
+    gap: 40px;
+  }
+
+  .gnav {
+    position: static;
+    padding: 0;
+    background: none;
+    opacity: 1;
+    visibility: visible;
+    transition: none;
+  }
+
+  .gnav__list {
+    flex-direction: row;
+    gap: 40px;
+  }
+
+  .gnav__en {
+    font-size: 17px;
+  }
+
+  .gnav__ja {
+    font-size: 10px;
+  }
+
+  .gnav__link .gnav__en {
+    transition: color 0.3s;
+  }
+
+  .gnav__link:hover .gnav__en {
+    color: var(--color-accent);
+  }
+
+  .header__reserve {
+    padding: 10px 28px;
+  }
+
+  .menu-btn {
+    display: none;
+  }
+}
+
+/* ヘッダー：メインビジュアルの上では透明にして白文字（TOPのみ）
+   メインビジュアルを過ぎるか、スマホメニューを開いたら通常の見た目に戻す（is-scrolled は main.js で付与） */
+.header--overlay {
+  color: #fff;
+  transition: color 0.6s;
+}
+
+.header--overlay::before {
+  opacity: 0;
+}
+
+.header--overlay .header__logo-ja,
+.header--overlay .gnav__ja {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.header--overlay .header__reserve {
+  border-color: rgba(255, 255, 255, 0.8);
+}
+
+.header--overlay .header__reserve:hover {
+  background-color: #fff;
+  color: var(--color-text);
+}
+
+.header--overlay .menu-btn__line {
+  background-color: currentColor;
+}
+
+/* 写真の上では苔色が沈むので、今いるページは白のまま下線で示す（PCのみ） */
+@media (min-width: 900px) {
+  .header--overlay:not(.is-scrolled) .gnav__link[aria-current="page"] .gnav__en {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 6px;
+  }
+}
+
+.header--overlay.is-scrolled,
+.is-menu-open .header--overlay {
+  color: var(--color-text);
+}
+
+.header--overlay.is-scrolled::before,
+.is-menu-open .header--overlay::before {
+  opacity: 1;
+}
+
+.header--overlay.is-scrolled .header__logo-ja,
+.header--overlay.is-scrolled .gnav__ja,
+.is-menu-open .header--overlay .header__logo-ja,
+.is-menu-open .header--overlay .gnav__ja {
+  color: var(--color-text-sub);
+}
+
+.header--overlay.is-scrolled .header__reserve,
+.is-menu-open .header--overlay .header__reserve {
+  border-color: var(--color-text);
+}
+
+.header--overlay.is-scrolled .header__reserve:hover {
+  background-color: var(--color-text);
+  color: var(--color-bg);
+}
+
+/* =========================================
+   共通パーツ
+========================================= */
+.section {
+  padding: 96px 0;
+}
+
+.section__inner {
+  max-width: var(--inner);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+@media (min-width: 900px) {
+  .section {
+    padding: 160px 0;
+  }
+}
+
+/* 見出し：英字＋和文（大きくせず、余白で見せる） */
+.section-title {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-weight: 400;
+}
+
+.section-title__en {
+  font-family: var(--font-en);
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  line-height: 1.2;
+}
+
+.section-title__ja {
+  font-family: var(--font-mincho);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  color: var(--color-text-sub);
+}
+
+@media (min-width: 900px) {
+  .section-title__en {
+    font-size: 24px;
+  }
+}
+
+/* セクションの頭：PCでは見出しを左、説明文を右 */
+.section-head {
+  display: grid;
+  gap: 24px;
+  margin-bottom: 56px;
+}
+
+.section-head__lead {
+  font-family: var(--font-mincho);
+  line-height: 2.2;
+}
+
+@media (min-width: 900px) {
+  .section-head {
+    grid-template-columns: 280px 1fr;
+    margin-bottom: 80px;
+  }
+}
+
+/* テキストリンク（サブCTA） */
+.text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid currentColor;
+  font-family: var(--font-mincho);
+  font-size: 14px;
+  letter-spacing: 0.12em;
+}
+
+.text-link::after {
+  content: "";
+  width: 24px;
+  height: 1px;
+  background-color: currentColor;
+  transition: width 0.4s;
+}
+
+.text-link:hover::after {
+  width: 36px;
+}
+
+/* ボタン（メインCTA） */
+.btn {
+  display: inline-block;
+  min-width: 280px;
+  padding: 20px 48px;
+  font-family: var(--font-mincho);
+  font-size: 15px;
+  letter-spacing: 0.16em;
+  text-align: center;
+  transition: background-color 0.4s, color 0.4s;
+}
+
+.btn--primary {
+  background-color: var(--color-text);
+  color: var(--color-bg);
+}
+
+.btn--primary:hover {
+  background-color: var(--color-accent);
+}
+
+.btn--outline {
+  border: 1px solid var(--color-text);
+  background: none;
+  color: var(--color-text);
+}
+
+.btn--outline:hover {
+  background-color: var(--color-text);
+  color: var(--color-bg);
+}
+
+.btn--light {
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  color: #fff;
+}
+
+.btn--light:hover {
+  background-color: #fff;
+  color: var(--color-text);
+}
+
+/* パンくずリスト（写真のFVのすぐ下。NEWS DETAILは記事のタイトルの上）
+   STAY DETAILでは止まっている写真の上に重なるので、背景色を付けて覆う */
+.breadcrumb {
+  position: relative;
+  background-color: var(--color-bg);
+}
+
+.breadcrumb__list {
+  display: flex;
+  max-width: var(--inner);
+  margin: 0 auto;
+  padding: 16px var(--gutter) 0;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--color-text-sub);
+  white-space: nowrap;
+  list-style: none;
+}
+
+.breadcrumb__item + .breadcrumb__item::before {
+  content: "/";
+  margin: 0 10px;
+  color: var(--color-line);
+}
+
+.breadcrumb__item a {
+  transition: color 0.3s;
+}
+
+.breadcrumb__item a:hover {
+  color: var(--color-text);
+}
+
+/* 最後（いまのページ）は長いことがあるので、はみ出す分は「…」にする */
+.breadcrumb__item:last-child {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--color-text);
+}
+
+.breadcrumb--inline .breadcrumb__list {
+  margin-bottom: 32px;
+  padding: 0;
+}
+
+@media (min-width: 900px) {
+  .breadcrumb__list {
+    padding-top: 24px;
+  }
+
+  .breadcrumb--inline .breadcrumb__list {
+    margin-bottom: 48px;
+    padding-top: 0;
+  }
+}
+
+/* 横にスライドするカード（スマホ：TOPの宿、宿のページの「ほかの宿」）
+   1枚ずつ見せて、写真の左右の矢印かスワイプで切り替える。PCのブラウザではマウスでもドラッグできる（main.js） */
+.slider {
+  position: relative;
+}
+
+.js-slider {
+  cursor: grab;
+}
+
+.js-slider.is-dragging {
+  cursor: grabbing;
+  scroll-snap-type: none;
+  user-select: none;
+}
+
+.js-slider.is-dragging a {
+  pointer-events: none;
+}
+
+/* 写真を持ち出すドラッグ（Safari）や長押しのメニューを出さない */
+.js-slider img {
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+/* 矢印は写真（4:5）の高さの真ん中に置く。写真と同じ比率の透明な箱を重ねて、その中で上下中央にそろえる */
+.slider__nav {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  aspect-ratio: 4 / 5;
+  padding: 0 10px;
+  pointer-events: none;
+}
+
+.slider__arrow {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background-color: rgba(247, 245, 240, 0.85);
+  cursor: pointer;
+  pointer-events: auto;
+  transition: opacity 0.3s, background-color 0.3s;
+}
+
+/* 三角の矢印 */
+.slider__arrow::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-style: solid;
+  border-color: transparent;
+}
+
+.slider__arrow--prev::before {
+  border-width: 6px 9px 6px 0;
+  border-right-color: var(--color-text);
+  transform: translate(-60%, -50%);
+}
+
+.slider__arrow--next::before {
+  border-width: 6px 0 6px 9px;
+  border-left-color: var(--color-text);
+  transform: translate(-40%, -50%);
+}
+
+.slider__arrow:hover {
+  background-color: var(--color-bg);
+}
+
+/* 最初の1枚では「前へ」、最後の1枚では「次へ」を薄くして押せなくする */
+.slider__arrow:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.slider__count {
+  margin-top: 20px;
+  font-family: var(--font-en);
+  font-size: 14px;
+  letter-spacing: 0.2em;
+  color: var(--color-text-sub);
+  text-align: center;
+}
+
+@media (min-width: 900px) {
+  /* PCは横並び（スライドしない）なので、矢印と枚数は出さない */
+  .slider__nav,
+  .slider__count {
+    display: none;
+  }
+
+  .js-slider {
+    cursor: auto;
+  }
+}
+
+/* PCだけで改行する */
+.u-pc {
+  display: none;
+}
+
+@media (min-width: 900px) {
+  .u-pc {
+    display: inline;
+  }
+
+  .u-sp {
+    display: none;
+  }
+}
+
+/* スクロールでふわっと表示（JSが動くときだけ） */
+.js .js-fade {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 1.4s ease, transform 1.4s ease;
+}
+
+.js .js-fade.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js .js-fade {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* =========================================
+   TOP：メインビジュアル
+   スクロールに合わせて写真が生成りに溶けていく（--progress は main.js で 0〜1）
+========================================= */
+.hero {
+  --progress: 0;
+  position: relative;
+  /* 写真の明るい部分でも白文字が読めるように */
+  text-shadow: 0 0 16px rgba(0, 0, 0, 0.35);
+  /* 透明なヘッダーの下まで写真を広げる */
+  margin-top: calc(var(--header-h) * -1);
+  height: 100svh;
+  min-height: 600px;
+  overflow: hidden;
+  color: #fff;
+}
+
+.hero__media {
+  position: absolute;
+  inset: 0;
+  -webkit-mask-image: linear-gradient(to top, transparent calc(var(--progress) * 60%), #000 calc(var(--progress) * 100% + 0.1%));
+  mask-image: linear-gradient(to top, transparent calc(var(--progress) * 60%), #000 calc(var(--progress) * 100% + 0.1%));
+}
+
+.hero__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* スマホは左の木の壁と行灯が入るように寄せる（キャッチコピーを暗い壁の上に置くため） */
+  object-position: 15% center;
+  transform: translateY(calc(var(--progress) * 12%)) scale(1.05);
+}
+
+/* 全体に薄く黒を重ね、上端は少し濃くしてヘッダーの白文字を読みやすくする */
+.hero__media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0) 200px),
+    rgba(0, 0, 0, 0.32);
+}
+
+.hero__logo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  font-weight: 400;
+  opacity: calc(1 - var(--progress) * 2);
+  transform: translate(-50%, -50%);
+}
+
+.hero__sub {
+  margin-right: -0.32em;
+  margin-bottom: 20px;
+  font-family: var(--font-mincho);
+  font-size: 13px;
+  letter-spacing: 0.32em;
+  white-space: nowrap;
+}
+
+.hero__logo-en {
+  font-family: var(--font-en);
+  font-size: 40px;
+  font-weight: 500;
+  letter-spacing: 0.32em;
+  line-height: 1;
+  /* 字間の分だけ右にずれるのを戻す */
+  margin-right: -0.32em;
+}
+
+.hero__logo-ja {
+  font-family: var(--font-mincho);
+  font-size: 13px;
+}
+
+.hero__bar {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: flex-end;
+  gap: 24px;
+  padding: 0 var(--gutter) 28px;
+  opacity: calc(1 - var(--progress) * 2.5);
+}
+
+/* キャッチコピー
+   スマホ：ロゴの下に横書きで2行（中央揃え）
+   PC：左端に縦書きで2行。2行目は1行目より下から始める */
+.hero__catch {
+  position: absolute;
+  top: calc(50% + 96px);
+  left: 50%;
+  z-index: 1;
+  font-family: var(--font-mincho);
+  font-size: 14px;
+  letter-spacing: 0.2em;
+  line-height: 2.2;
+  text-align: center;
+  white-space: nowrap;
+  opacity: calc(1 - var(--progress) * 2);
+  transform: translateX(-50%);
+}
+
+.hero__catch-line {
+  display: block;
+}
+
+.hero__meta {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-family: var(--font-en);
+  font-size: 13px;
+  letter-spacing: 0.16em;
+}
+
+.hero__scroll {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hero__scroll::after {
+  content: "";
+  width: 1px;
+  height: 32px;
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+@media (min-width: 900px) {
+  .hero__logo-en {
+    font-size: 56px;
+  }
+
+  .hero__bar {
+    padding-bottom: 40px;
+  }
+
+  .hero__media img {
+    object-position: center;
+  }
+
+  /* PCは、左の縦書きコピーの書き出しを中央のサブコピーの上端に揃える
+     （中央のブロックを上端基準で置き、同じ top を使う） */
+  .hero {
+    /* 中央のブロック（高さ約160px）が画面の中央にくる値 */
+    --hero-top: calc(50% - 80px);
+  }
+
+  .hero__logo {
+    top: var(--hero-top);
+    transform: translateX(-50%);
+  }
+
+  .hero__catch {
+    top: var(--hero-top);
+    left: calc(var(--gutter) + 16px);
+    font-size: 18px;
+    letter-spacing: 0.28em;
+    line-height: 2;
+    text-align: left;
+    writing-mode: vertical-rl;
+    transform: none;
+  }
+
+  .hero__catch-line + .hero__catch-line {
+    padding-inline-start: 2.5em;
+  }
+
+  .hero__sub {
+    margin-bottom: 28px;
+    font-size: 15px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero {
+    --progress: 0 !important;
+  }
+}
+
+/* =========================================
+   TOP：コンセプト（縦書き）
+========================================= */
+.top-concept__inner {
+  display: grid;
+  gap: 56px;
+}
+
+.top-concept__body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 72px;
+}
+
+.top-concept__text {
+  font-family: var(--font-mincho);
+  font-size: 15px;
+  line-height: 2.4;
+  letter-spacing: 0.24em;
+  white-space: nowrap;
+  writing-mode: vertical-rl;
+}
+
+.top-concept__catch {
+  display: block;
+  margin-left: 1.6em;
+  font-size: 20px;
+  letter-spacing: 0.32em;
+}
+
+@media (min-width: 900px) {
+  .top-concept__inner {
+    grid-template-columns: 280px 1fr;
+  }
+
+  .top-concept__body {
+    flex-direction: row-reverse;
+    align-items: flex-end;
+    justify-content: flex-start;
+    gap: 160px;
+    /* 下にずらしたリンクの分、次のセクションとの間隔を保つ */
+    padding-bottom: 64px;
+    padding-right: 8%;
+  }
+
+  /* 文章の最後の行よりさらに下に置き、文章との間をあける */
+  .top-concept__body .text-link {
+    margin-bottom: -64px;
+  }
+
+  .top-concept__text {
+    font-size: 16px;
+  }
+
+  .top-concept__catch {
+    font-size: 24px;
+  }
+}
+
+/* =========================================
+   TOP：宿
+========================================= */
+.top-stays {
+  padding-top: 0;
+}
+
+/* スマホ：横スクロール／PC：3列（真ん中だけ下げてリズムを出す） */
+.top-stays__list {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.top-stays__list::-webkit-scrollbar {
+  display: none;
+}
+
+/* スマホのスライダーでは1枚ずつ見せる（STAYSの一覧はグリッドなので影響しない） */
+.stay-card {
+  flex: 0 0 100%;
+  scroll-snap-align: center;
+}
+
+.stay-card__img {
+  aspect-ratio: 4 / 5;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.stay-card__img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1.6s ease;
+}
+
+.stay-card__link:hover .stay-card__img img {
+  transform: scale(1.04);
+}
+
+.stay-card__area {
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  color: var(--color-text-sub);
+}
+
+.stay-card__name {
+  margin: 4px 0 6px;
+  font-family: var(--font-mincho);
+  font-size: 17px;
+  font-weight: 400;
+}
+
+.stay-card__type {
+  font-size: 12px;
+  color: var(--color-text-sub);
+}
+
+.top-stays__cta {
+  margin-top: 56px;
+  text-align: center;
+}
+
+@media (min-width: 900px) {
+  .top-stays__list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 48px;
+    margin: 0;
+    padding: 0;
+    overflow: visible;
+  }
+
+  .top-stays__list .stay-card:nth-child(2) {
+    margin-top: 120px;
+  }
+
+  .top-stays__cta {
+    margin-top: 96px;
+  }
+}
+
+/* =========================================
+   TOP：ご利用案内（写真を画面の左端まで広げる）
+========================================= */
+.top-guide__inner {
+  display: grid;
+  gap: 40px;
+}
+
+.top-guide__img {
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+}
+
+.top-guide__img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.top-guide__body {
+  padding: 0 var(--gutter);
+}
+
+.top-guide__body .section-title {
+  margin-bottom: 32px;
+}
+
+.top-guide__text {
+  margin-bottom: 40px;
+}
+
+@media (min-width: 900px) {
+  .top-guide__inner {
+    grid-template-columns: 56% 1fr;
+    align-items: center;
+    gap: 80px;
+    padding-right: max(var(--gutter), calc((100vw - var(--inner)) / 2 + var(--gutter)));
+  }
+
+  .top-guide__img {
+    aspect-ratio: 4 / 3;
+  }
+
+  .top-guide__body {
+    padding: 0;
+  }
+}
+
+/* =========================================
+   TOP：お知らせ
+========================================= */
+.top-news {
+  padding-top: 0;
+}
+
+.top-news__inner {
+  display: grid;
+  gap: 32px;
+}
+
+.top-news__more {
+  margin-top: 40px;
+}
+
+.news-list {
+  border-top: 1px solid var(--color-line);
+}
+
+.news-list__item {
+  border-bottom: 1px solid var(--color-line);
+}
+
+.news-list__link {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 16px;
+  padding: 24px 0;
+  transition: opacity 0.4s;
+}
+
+.news-list__link:hover {
+  opacity: 0.6;
+}
+
+.news-list__date {
+  font-family: var(--font-en);
+  font-size: 15px;
+  letter-spacing: 0.08em;
+  color: var(--color-text-sub);
+}
+
+.news-list__cat {
+  justify-self: start;
+  padding: 0 10px;
+  border: 1px solid var(--color-line);
+  font-size: 11px;
+  line-height: 22px;
+  color: var(--color-text-sub);
+}
+
+.news-list__title {
+  grid-column: 1 / -1;
+}
+
+@media (min-width: 900px) {
+  .top-news__inner {
+    grid-template-columns: 280px 1fr;
+    gap: 0;
+  }
+
+  .news-list__link {
+    grid-template-columns: 110px 120px 1fr;
+    align-items: center;
+    padding: 28px 0;
+  }
+
+  .news-list__title {
+    grid-column: auto;
+  }
+}
+
+/* =========================================
+   TOP：予約への入口
+   写真は画面に止まったまま、上を文章が流れ、最後はフッターに覆われる
+   （section の clip-path を窓にして、中の写真を fixed にする）
+========================================= */
+.top-reserve {
+  position: relative;
+  clip-path: inset(0);
+  color: #fff;
+  text-align: center;
+}
+
+.top-reserve__media {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100lvh;
+}
+
+.top-reserve__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* 縦長の写真なので、下寄りの焚き火が画面に入るようにする */
+  object-position: center 80%;
+}
+
+.top-reserve__media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.top-reserve__body {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 130lvh;
+  padding: 40lvh var(--gutter);
+}
+
+.top-reserve__title {
+  margin-bottom: 20px;
+  font-family: var(--font-mincho);
+  font-size: 22px;
+  font-weight: 400;
+  letter-spacing: 0.24em;
+}
+
+.top-reserve__text {
+  margin-bottom: 48px;
+  font-size: 14px;
+}
+
+@media (min-width: 900px) {
+  /* 焚き火が画面中央にくるので、文章は左に寄せて重ならないようにする */
+  .top-reserve__body {
+    place-items: center start;
+    padding-left: max(var(--gutter), calc((100vw - var(--inner)) / 2 + var(--gutter)));
+    text-align: left;
+  }
+
+  .top-reserve__title {
+    font-size: 28px;
+  }
+}
+
+/* =========================================
+   各ページの写真のファーストビュー（CONCEPT／STAYSなど）
+   写真を画面の幅いっぱいに置き、白文字を重ねる。ヘッダーは写真の上では透明（header--overlay）
+========================================= */
+.page-hero {
+  position: relative;
+  /* 透明なヘッダーの下まで写真を広げる */
+  margin-top: calc(var(--header-h) * -1);
+  overflow: hidden;
+  color: #fff;
+  text-shadow: 0 0 16px rgba(0, 0, 0, 0.35);
+}
+
+.page-hero__media {
+  position: absolute;
+  inset: 0;
+}
+
+.page-hero__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 全体に薄く黒を重ね、上端は少し濃くしてヘッダーの白文字を読みやすくする */
+.page-hero__media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0) 200px),
+    rgba(0, 0, 0, 0.25);
+}
+
+.page-hero .section-title__ja {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* タイトル：画面の中央（TOPのロゴより小さくして、格の違いを出す） */
+.page-hero__title {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  font-weight: 400;
+  white-space: nowrap;
+  transform: translate(-50%, -50%);
+}
+
+.page-hero__title-en {
+  /* 字間の分だけ右にずれるのを戻す */
+  margin-right: -0.32em;
+  font-family: var(--font-en);
+  font-size: 28px;
+  font-weight: 500;
+  letter-spacing: 0.32em;
+  line-height: 1;
+}
+
+.page-hero__title-ja {
+  margin-right: -0.24em;
+  font-family: var(--font-mincho);
+  font-size: 12px;
+  letter-spacing: 0.24em;
+}
+
+/* コピー
+   スマホ：タイトルの下に横書きで2行（中央揃え）
+   PC：左端に縦書きで2行。書き出しをタイトルの上端に揃え、2行目は1行目より下から始める（TOPと同じ） */
+.page-hero__catch {
+  position: absolute;
+  top: calc(50% + 64px);
+  left: 50%;
+  z-index: 1;
+  font-family: var(--font-mincho);
+  font-size: 14px;
+  letter-spacing: 0.2em;
+  line-height: 2.2;
+  text-align: center;
+  white-space: nowrap;
+  transform: translateX(-50%);
+}
+
+.page-hero__catch-line {
+  display: block;
+}
+
+@media (min-width: 900px) {
+  .page-hero {
+    /* 中央のタイトル（高さ約70px）が画面の中央にくる値 */
+    --page-hero-top: calc(50% - 35px);
+  }
+
+  .page-hero__title {
+    top: var(--page-hero-top);
+    transform: translateX(-50%);
+  }
+
+  .page-hero__title-en {
+    font-size: 36px;
+  }
+
+  .page-hero__title-ja {
+    font-size: 13px;
+  }
+
+  .page-hero__catch {
+    top: var(--page-hero-top);
+    left: calc(var(--gutter) + 16px);
+    font-size: 16px;
+    letter-spacing: 0.24em;
+    line-height: 2;
+    text-align: left;
+    writing-mode: vertical-rl;
+    transform: none;
+  }
+
+  .page-hero__catch-line + .page-hero__catch-line {
+    padding-inline-start: 2em;
+  }
+
+  /* 3行以上のときは段差をつけず、書き出しをそろえる */
+  .page-hero__catch--even .page-hero__catch-line + .page-hero__catch-line {
+    padding-inline-start: 0;
+  }
+}
+
+/* 高さ約50%の型（NEWS・GUIDE）。すぐ読んでほしいページなので低めにし、すぐ下に中身がのぞくようにする */
+.page-hero--half {
+  height: 50svh;
+  min-height: 380px;
+}
+
+/* 写真の狭い範囲に文字が集まるので、黒の重ねを少し濃くする */
+.page-hero--half .page-hero__media::after {
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0) 200px),
+    rgba(0, 0, 0, 0.38);
+}
+
+@media (min-width: 900px) {
+  .page-hero--half {
+    min-height: 460px;
+  }
+}
+
+/* =========================================
+   CONCEPT：ファーストビュー（全画面）
+   ページに大きな演出がすでに2つあるので、ここは動かさない
+========================================= */
+.c-intro {
+  height: 100svh;
+  min-height: 600px;
+}
+
+/* 青みが強いので彩度を抑え、ほかの写真のトーンに寄せる */
+.c-intro .page-hero__media img {
+  filter: saturate(0.6);
+}
+
+/* =========================================
+   CONCEPT：「凪」に込めた思い
+   スマホ：文章 → 写真の順に並べる
+   PC：右の文章は画面に止まり、左の写真が流れていく（写真の中は少しずつ上下に動く）
+========================================= */
+.c-nagi__inner {
+  display: grid;
+  gap: 72px;
+}
+
+.c-nagi__text-body {
+  font-family: var(--font-mincho);
+  line-height: 2.2;
+  letter-spacing: 0.12em;
+}
+
+.c-nagi__title {
+  margin-bottom: 32px;
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: 0.24em;
+}
+
+/* 段落の間隔は論理方向で指定する（縦書きのPCでは上ではなく右にあき、行頭がそろう） */
+.c-nagi__text-body p + p {
+  margin-block-start: 1.6em;
+}
+
+.c-nagi__photos {
+  display: grid;
+  gap: 40px;
+}
+
+.c-nagi__photo {
+  overflow: hidden;
+}
+
+.c-nagi__photo img {
+  position: relative;
+  top: -10%;
+  width: 100%;
+  height: 120%;
+  object-fit: cover;
+  transform: translateY(calc(var(--shift, 0) * 8%));
+}
+
+/* 大きさと位置をずらして、雑誌のようなリズムを出す */
+.c-nagi__photo:nth-child(1) {
+  aspect-ratio: 3 / 2;
+  margin-left: calc(var(--gutter) * -1);
+  margin-right: 12%;
+}
+
+.c-nagi__photo:nth-child(2) {
+  aspect-ratio: 4 / 5;
+  width: 58%;
+  justify-self: end;
+}
+
+.c-nagi__photo:nth-child(3) {
+  aspect-ratio: 2 / 3;
+  width: 64%;
+  margin-left: 6%;
+}
+
+.c-nagi__photo:nth-child(4) {
+  aspect-ratio: 3 / 2;
+  margin-left: 20%;
+  margin-right: calc(var(--gutter) * -1);
+}
+
+@media (min-width: 900px) {
+  .c-nagi__inner {
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+  }
+
+  .c-nagi__text {
+    grid-column: 2;
+    grid-row: 1;
+    position: sticky;
+    top: var(--header-h);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: calc(100lvh - var(--header-h));
+  }
+
+  .c-nagi__text-body {
+    font-size: 16px;
+    letter-spacing: 0.24em;
+    white-space: nowrap;
+    writing-mode: vertical-rl;
+  }
+
+  .c-nagi__title {
+    margin: 0 0 0 2em;
+    font-size: 24px;
+  }
+
+  .c-nagi__photos {
+    grid-column: 1;
+    grid-row: 1;
+    gap: 160px;
+    /* 文章が止まっているあいだに、最後の写真まで流しきる */
+    padding: 10vh 0;
+  }
+
+  .c-nagi__photo:nth-child(1) {
+    margin-left: calc(max(var(--gutter), (100vw - var(--inner)) / 2 + var(--gutter)) * -1);
+    margin-right: 0;
+  }
+
+  .c-nagi__photo:nth-child(2) {
+    width: 52%;
+  }
+
+  .c-nagi__photo:nth-child(3) {
+    width: 60%;
+    margin-left: 4%;
+  }
+
+  .c-nagi__photo:nth-child(4) {
+    width: 76%;
+    margin: 0;
+    justify-self: end;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .c-nagi__photo img {
+    transform: none;
+  }
+
+  .c-nagi__text {
+    position: static;
+  }
+}
+
+/* =========================================
+   CONCEPT：3つの約束
+========================================= */
+.c-promise__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--color-line);
+}
+
+.c-promise__item {
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  gap: 4px 16px;
+  padding: 32px 0;
+  border-bottom: 1px solid var(--color-line);
+}
+
+.c-promise__num {
+  grid-row: 1 / 3;
+  font-family: var(--font-en);
+  font-size: 15px;
+  letter-spacing: 0.12em;
+  line-height: 1.6;
+  color: var(--color-text-sub);
+}
+
+.c-promise__title {
+  font-family: var(--font-mincho);
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: 0.24em;
+  line-height: 1.4;
+}
+
+.c-promise__text {
+  margin-top: 12px;
+}
+
+@media (min-width: 900px) {
+  .c-promise__list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border: none;
+  }
+
+  .c-promise__item {
+    grid-template-columns: 1fr;
+    gap: 0;
+    padding: 8px 40px 8px;
+    border-bottom: none;
+    border-left: 1px solid var(--color-line);
+  }
+
+  .c-promise__item:last-child {
+    border-right: 1px solid var(--color-line);
+  }
+
+  .c-promise__num {
+    grid-row: auto;
+    margin-bottom: 20px;
+  }
+
+  .c-promise__text {
+    margin-top: 24px;
+  }
+}
+
+/* =========================================
+   CONCEPT：4つの過ごし方
+   場面ごとに画面いっぱいの写真（スマホは文章を下に、PCは左下に重ねる）
+   動きOK・JSあり：画面を止めて4つの場面を重ね、手前から下→上へ拭き取るように消す
+   （--wipe は main.js で 0〜1）
+========================================= */
+.scene {
+  position: relative;
+  height: 100lvh;
+  overflow: hidden;
+  color: #fff;
+}
+
+.scene__media {
+  position: absolute;
+  inset: 0;
+}
+
+.scene__media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  /* 文章が重なる下側を暗くする */
+  background:
+    linear-gradient(to top, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0) 60%),
+    rgba(0, 0, 0, 0.15);
+}
+
+.scene__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 縦長の写真なので、下寄りの手桶が入るようにする */
+.scene__media--sauna img {
+  object-position: center 88%;
+}
+
+.scene__body {
+  position: absolute;
+  /* 100lvh は iPhone の下のバーに隠れる分も含むため、その差（100lvh - 100svh）だけ上げる */
+  bottom: calc(8svh + 100lvh - 100svh);
+  left: var(--gutter);
+  right: var(--gutter);
+  text-shadow: 0 0 16px rgba(0, 0, 0, 0.3);
+}
+
+.scene__label {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 12px;
+  font-family: var(--font-en);
+  font-size: 15px;
+  letter-spacing: 0.24em;
+}
+
+.scene__num {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.scene__title {
+  margin-bottom: 16px;
+  font-family: var(--font-mincho);
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+}
+
+.scene__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 32px;
+  margin-top: 28px;
+}
+
+/* この過ごし方ができる宿の一覧へ（STAYSの絞り込み）。各宿へのリンクより一段控えめにする */
+.scene__more {
+  margin-top: 24px;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+}
+
+.scene__more-link {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 5px;
+  transition: opacity 0.3s;
+}
+
+.scene__more-link:hover {
+  opacity: 0.6;
+}
+
+@media (min-width: 900px) {
+  .scene {
+    min-height: 640px;
+  }
+
+  .scene__media::after {
+    background:
+      linear-gradient(to right, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0) 60%),
+      rgba(0, 0, 0, 0.2);
+  }
+
+  .scene__body {
+    bottom: 12vh;
+    left: max(var(--gutter), calc((100vw - var(--inner)) / 2 + var(--gutter)));
+    right: auto;
+  }
+
+  .scene__title {
+    margin-bottom: 20px;
+    font-size: 26px;
+  }
+
+  .scene__links {
+    margin-top: 40px;
+  }
+
+  .scene__more {
+    margin-top: 28px;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* 4場面で画面4枚分スクロールする */
+  .js .scenes {
+    height: calc(100lvh * 4);
+  }
+
+  .js .scenes__stage {
+    position: sticky;
+    top: 0;
+    height: 100lvh;
+    overflow: hidden;
+  }
+
+  .js .scene {
+    position: absolute;
+    inset: 0;
+    clip-path: inset(0 0 calc(var(--wipe, 0) * 100%) 0);
+  }
+
+  /* 手前の場面ほど上に重ねる */
+  .js .scene:nth-child(1) { z-index: 4; }
+  .js .scene:nth-child(2) { z-index: 3; }
+  .js .scene:nth-child(3) { z-index: 2; }
+  .js .scene:nth-child(4) { z-index: 1; }
+
+  /* 表示中の場面の写真を、ゆっくり等倍に戻す */
+  .js .scene__media img {
+    transform: scale(1.08);
+    transition: transform 6s ease-out;
+  }
+
+  .js .scene.is-active .scene__media img {
+    transform: none;
+  }
+}
+
+/* =========================================
+   CONCEPT：CTA
+========================================= */
+.c-cta__inner {
+  text-align: center;
+}
+
+.c-cta__text {
+  margin-bottom: 48px;
+  font-family: var(--font-mincho);
+  font-size: 20px;
+  letter-spacing: 0.24em;
+  line-height: 2;
+}
+
+@media (min-width: 900px) {
+  .c-cta__text {
+    font-size: 24px;
+  }
+}
+
+/* =========================================
+   STAYS：ファーストビュー
+   CONCEPTとそろえつつ、高さは画面の約70%にして、すぐ下の絞り込みが最初の画面にのぞくようにする
+========================================= */
+.stays-head {
+  height: 70svh;
+  min-height: 460px;
+}
+
+@media (min-width: 900px) {
+  .stays-head {
+    min-height: 560px;
+  }
+}
+
+/* =========================================
+   絞り込み（STAYS・NEWS共通）
+   1つだけ選べるボタン。main.js が data-tags を見て項目を出し分け、URL の ?{data-param}= にも書き出す
+========================================= */
+.filter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 24px;
+  margin-bottom: 48px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--color-line);
+}
+
+.filter__label {
+  width: 100%;
+  font-family: var(--font-mincho);
+  font-size: 13px;
+  color: var(--color-text-sub);
+}
+
+.filter__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.filter__btn {
+  padding: 6px 18px;
+  border: 1px solid var(--color-line);
+  border-radius: 999px;
+  background: none;
+  color: var(--color-text);
+  font-family: var(--font-mincho);
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  transition: border-color 0.3s, background-color 0.3s, color 0.3s;
+}
+
+.filter__btn:hover {
+  border-color: var(--color-text);
+}
+
+.filter__btn[aria-pressed="true"] {
+  border-color: var(--color-accent);
+  background-color: var(--color-accent);
+  color: var(--color-bg);
+}
+
+.filter__count {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--color-text-sub);
+}
+
+.filter__num {
+  margin-right: 2px;
+  font-family: var(--font-en);
+  font-size: 18px;
+  color: var(--color-text);
+}
+
+@media (min-width: 900px) {
+  .filter {
+    flex-wrap: nowrap;
+    margin-bottom: 80px;
+  }
+
+  .filter__label {
+    width: auto;
+    margin-right: 8px;
+  }
+}
+
+/* =========================================
+   STAYS：施設カード
+========================================= */
+.stays {
+  padding-top: 48px;
+}
+
+.stays-list {
+  display: grid;
+  gap: 64px;
+}
+
+.stays-list .stay-card__img {
+  aspect-ratio: 4 / 3;
+}
+
+/* 絞り込みで現れたカードを、ふわっと表示する */
+.stays-list .stay-card:not([hidden]) {
+  animation: stays-fade 1s ease;
+}
+
+/* 右の列は transform で下げているので、動かすのは透明度だけにする */
+@keyframes stays-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+.stay-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-line);
+}
+
+.stay-card__tags {
+  display: flex;
+  gap: 6px;
+}
+
+.stay-card__tags li {
+  padding: 0 10px;
+  border: 1px solid var(--color-line);
+  font-size: 11px;
+  line-height: 22px;
+  color: var(--color-text-sub);
+}
+
+.stay-card__price {
+  font-size: 12px;
+  color: var(--color-text-sub);
+}
+
+.stay-card__yen {
+  margin-left: 10px;
+  font-family: var(--font-en);
+  font-size: 18px;
+  letter-spacing: 0.04em;
+  color: var(--color-text);
+}
+
+.stays-note {
+  margin-top: 56px;
+  font-size: 12px;
+  color: var(--color-text-sub);
+}
+
+@media (min-width: 900px) {
+  .stays {
+    padding-top: 64px;
+  }
+
+  /* 2列。右の列だけ下げて、整列を少し崩す（表示中のカードだけで数える） */
+  .stays-list {
+    grid-template-columns: 1fr 1fr;
+    gap: 96px 64px;
+    padding-bottom: 120px;
+  }
+
+  .stays-list .stay-card:nth-child(even of :not([hidden])) {
+    transform: translateY(120px);
+  }
+
+  /* 下げたカードの分だけあくので、注記はその下に置く */
+  .stays-note {
+    margin-top: 40px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stays-list .stay-card:not([hidden]) {
+    animation: none;
+  }
+}
+
+/* =========================================
+   STAYS：迷ったらご利用案内へ
+========================================= */
+.stays-guide {
+  padding-top: 0;
+}
+
+.stays-guide__box {
+  padding: 48px 24px;
+  border: 1px solid var(--color-line);
+  text-align: center;
+}
+
+.stays-guide__title {
+  margin-bottom: 20px;
+  font-family: var(--font-mincho);
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+}
+
+.stays-guide__text {
+  margin-bottom: 32px;
+  text-align: left;
+}
+
+@media (min-width: 900px) {
+  .stays-guide__box {
+    padding: 72px 40px;
+  }
+
+  .stays-guide__title {
+    font-size: 22px;
+  }
+
+  .stays-guide__text {
+    text-align: center;
+  }
+}
+
+/* =========================================
+   写真のファーストビュー：写真を画面に止める型（STAY DETAIL）
+   section の clip-path を窓にして中の写真を fixed にし、上を文章が流れ、次のセクションに覆われる（TOPの予約への入口と同じ仕組み）
+========================================= */
+.page-hero--sticky {
+  overflow: visible;
+  clip-path: inset(0);
+}
+
+.page-hero--sticky .page-hero__media {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100lvh;
+}
+
+/* 写真の明るい部分の上も文章が流れるので、黒の重ねを少し濃くする */
+.page-hero--sticky .page-hero__media::after {
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0) 200px),
+    rgba(0, 0, 0, 0.35);
+}
+
+/* =========================================
+   STAY DETAIL：FV
+========================================= */
+/* 最初の1画面。タイトルとコピーの位置（page-hero）はこの箱を基準にする */
+.sd-hero__screen {
+  position: relative;
+  height: 100svh;
+  min-height: 600px;
+}
+
+/* 写真をゆっくり等倍に戻す */
+.sd-hero .page-hero__media img {
+  animation: sd-hero-zoom 8s ease-out both;
+}
+
+@keyframes sd-hero-zoom {
+  from {
+    transform: scale(1.08);
+  }
+}
+
+.sd-hero__bar {
+  position: absolute;
+  right: 0;
+  bottom: 28px;
+  left: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 0 var(--gutter);
+}
+
+.sd-hero__price {
+  font-size: 12px;
+  letter-spacing: 0.12em;
+}
+
+.sd-hero__yen {
+  margin-left: 10px;
+  font-family: var(--font-en);
+  font-size: 22px;
+  letter-spacing: 0.04em;
+}
+
+.sd-hero__btn {
+  min-width: 0;
+  padding: 14px 40px;
+  font-size: 14px;
+}
+
+/* 止まった写真の上を流れる紹介文 */
+.sd-hero__intro {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2em;
+  min-height: 100lvh;
+  padding: 24lvh var(--gutter);
+  font-family: var(--font-mincho);
+  font-size: 15px;
+  letter-spacing: 0.16em;
+  line-height: 2.4;
+  text-align: center;
+}
+
+@media (min-width: 900px) {
+  .sd-hero__bar {
+    flex-direction: row;
+    justify-content: flex-end;
+    gap: 32px;
+    bottom: 40px;
+    padding: 0 max(var(--gutter), calc((100vw - var(--inner)) / 2 + var(--gutter)));
+  }
+
+  .sd-hero__intro {
+    font-size: 18px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sd-hero .page-hero__media img {
+    animation: none;
+  }
+}
+
+/* =========================================
+   STAY DETAIL：この宿での過ごし方
+   PCでは写真と文章を左右交互に置く
+========================================= */
+.sd-style {
+  /* FVの写真を覆うので、背景色を必ず付ける */
+  position: relative;
+  background-color: var(--color-bg);
+}
+
+.sd-style__list {
+  display: grid;
+  gap: 72px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sd-scene__img {
+  aspect-ratio: 4 / 3;
+  margin: 0 calc(var(--gutter) * -1) 24px;
+  overflow: hidden;
+}
+
+.sd-scene__img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sd-scene__time {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 8px;
+  font-family: var(--font-en);
+  font-size: 14px;
+  letter-spacing: 0.16em;
+  color: var(--color-text-sub);
+}
+
+.sd-scene__time-en {
+  color: var(--color-text);
+  letter-spacing: 0.24em;
+}
+
+.sd-scene__title {
+  margin-bottom: 16px;
+  font-family: var(--font-mincho);
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+}
+
+@media (min-width: 900px) {
+  .sd-style__list {
+    gap: 120px;
+  }
+
+  .sd-scene {
+    display: grid;
+    grid-template-columns: 58% 1fr;
+    align-items: center;
+    gap: 72px;
+  }
+
+  .sd-scene__img {
+    margin: 0;
+  }
+
+  /* 2つ目は写真を右に */
+  .sd-scene:nth-child(even) {
+    grid-template-columns: 1fr 58%;
+  }
+
+  .sd-scene:nth-child(even) .sd-scene__img {
+    order: 2;
+  }
+
+  .sd-scene__title {
+    font-size: 24px;
+  }
+}
+
+/* =========================================
+   STAY DETAIL：写真ギャラリー
+   スマホ：大きな1枚の下に小さな2枚を並べる
+   PC：大きな1枚を画面の左端まで広げ、右に小さな2枚を縦に重ねる
+   （見えたら写真をゆっくり等倍に戻す。is-visible は main.js で付与）
+========================================= */
+.sd-gallery {
+  position: relative;
+  background-color: var(--color-bg);
+}
+
+.sd-gallery__inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.sd-gallery__item {
+  margin: 0;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+}
+
+.sd-gallery__item--large {
+  grid-column: 1 / -1;
+  aspect-ratio: 4 / 5;
+}
+
+.sd-gallery__item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* 写真ごとに見せたい位置は HTML の style="--pos: …" で変える */
+  object-position: var(--pos, center);
+}
+
+.js .js-zoom img {
+  transform: scale(1.1);
+  transition: transform 6s ease-out;
+}
+
+.js .js-zoom.is-visible img {
+  transform: none;
+}
+
+@media (min-width: 900px) {
+  .sd-gallery__inner {
+    grid-template-columns: 56% 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 24px;
+    padding-right: max(var(--gutter), calc((100vw - var(--inner)) / 2 + var(--gutter)));
+  }
+
+  /* 右の2枚は、左の大きな写真の高さを半分ずつ分け合う（写真の元の高さで行が伸びないようにする） */
+  .sd-gallery__item {
+    position: relative;
+    aspect-ratio: auto;
+  }
+
+  .sd-gallery__item img {
+    position: absolute;
+    inset: 0;
+  }
+
+  .sd-gallery__item--large {
+    grid-column: 1;
+    grid-row: 1 / 3;
+    /* 行の高さはこの写真の比率で決める（stretch のままだと比率が効かない） */
+    align-self: start;
+    aspect-ratio: 4 / 3;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js .js-zoom img {
+    transform: none;
+    transition: none;
+  }
+}
+
+/* =========================================
+   STAY DETAIL：宿泊のご案内・アクセス
+========================================= */
+.sd-info,
+.sd-access,
+.sd-cta,
+.sd-others {
+  position: relative;
+  background-color: var(--color-bg);
+}
+
+.sd-access {
+  padding-top: 0;
+}
+
+.sd-info__inner {
+  display: grid;
+  gap: 32px;
+}
+
+.sd-table {
+  margin: 0;
+  border-top: 1px solid var(--color-line);
+}
+
+.sd-table__row {
+  display: grid;
+  grid-template-columns: 7.5em 1fr;
+  gap: 16px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--color-line);
+}
+
+.sd-table__row dt {
+  font-family: var(--font-mincho);
+  color: var(--color-text-sub);
+}
+
+.sd-table__row dd {
+  margin: 0;
+}
+
+.sd-table__prices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 32px;
+}
+
+.sd-table__prices span {
+  margin-right: 12px;
+  font-size: 12px;
+  color: var(--color-text-sub);
+}
+
+.sd-table__note {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--color-text-sub);
+}
+
+.sd-info__note {
+  margin-top: 20px;
+  font-size: 12px;
+  color: var(--color-text-sub);
+}
+
+@media (min-width: 900px) {
+  .sd-info__inner {
+    grid-template-columns: 280px 1fr;
+    gap: 0;
+  }
+
+  .sd-table__row {
+    grid-template-columns: 10em 1fr;
+    padding: 24px 0;
+  }
+}
+
+/* =========================================
+   STAY DETAIL：CTA
+========================================= */
+.sd-cta {
+  padding-top: 0;
+}
+
+.sd-cta__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  padding-top: 80px;
+  border-top: 1px solid var(--color-line);
+}
+
+.sd-cta__text {
+  font-family: var(--font-mincho);
+  font-size: 20px;
+  letter-spacing: 0.24em;
+}
+
+@media (min-width: 900px) {
+  .sd-cta__inner {
+    padding-top: 120px;
+  }
+
+  .sd-cta__text {
+    font-size: 24px;
+  }
+}
+
+/* =========================================
+   STAY DETAIL：ほかの宿も見る
+   スマホ：横スクロール／PC：5列
+========================================= */
+.sd-others {
+  padding-top: 0;
+}
+
+.section-head__link {
+  justify-self: start;
+}
+
+.sd-others__list {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.sd-others__list::-webkit-scrollbar {
+  display: none;
+}
+
+
+.sd-others__list .stay-card__name {
+  font-size: 15px;
+}
+
+@media (min-width: 900px) {
+  .section-head__link {
+    justify-self: end;
+    align-self: end;
+  }
+
+  .sd-others__list {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 24px;
+    margin: 0;
+    padding: 0;
+    overflow: visible;
+  }
+}
+
+/* =========================================
+   STAY DETAIL：スマホだけ、画面の下に予約ボタンを固定（FVを過ぎたら表示。is-shown は main.js で付与）
+========================================= */
+.sd-fixed-cta {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 90;
+  padding: 12px var(--gutter) calc(12px + env(safe-area-inset-bottom));
+  background-color: rgba(247, 245, 240, 0.94);
+  backdrop-filter: blur(8px);
+  border-top: 1px solid var(--color-line);
+  transform: translateY(100%);
+  transition: transform 0.6s ease;
+}
+
+.sd-fixed-cta.is-shown {
+  transform: none;
+}
+
+.sd-fixed-cta__btn {
+  display: block;
+  min-width: 0;
+  padding: 16px;
+}
+
+/* 固定ボタンの分、フッターの最後が隠れないようにする */
+.sd-fixed-cta + .footer {
+  padding-bottom: 80px;
+}
+
+@media (min-width: 900px) {
+  .sd-fixed-cta {
+    display: none;
+  }
+
+  .sd-fixed-cta + .footer {
+    padding-bottom: 0;
+  }
+}
+
+/* =========================================
+   文字だけのページの見出し（NEWS・GUIDE・RESERVE）
+   写真は置かず、見出しを左・リード文を右に置く
+========================================= */
+.page-head {
+  padding-top: 56px;
+}
+
+.page-head__inner {
+  margin-bottom: 0;
+}
+
+@media (min-width: 900px) {
+  .page-head {
+    padding-top: 112px;
+  }
+}
+
+/* =========================================
+   NEWS：一覧
+========================================= */
+.news {
+  padding-top: 48px;
+}
+
+/* 絞り込みの下線と重なるので、一覧の上線は消す */
+.filter + .news-list {
+  border-top: none;
+}
+
+@media (min-width: 900px) {
+  .news {
+    padding-top: 80px;
+  }
+}
+
+/* =========================================
+   NEWS DETAIL：記事
+   本文は1行30字前後の幅に絞る
+========================================= */
+.article {
+  padding: 56px 0 72px;
+}
+
+.article__inner {
+  max-width: calc(640px + var(--gutter) * 2);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+.article__meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.article__title {
+  font-family: var(--font-mincho);
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  line-height: 1.8;
+}
+
+.article__img {
+  margin: 40px calc(var(--gutter) * -1);
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+}
+
+.article__img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.article__body > * + * {
+  margin-top: 1.6em;
+}
+
+.article__body > .article__heading {
+  margin-top: 56px;
+  font-family: var(--font-mincho);
+  font-size: 17px;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+}
+
+@media (min-width: 900px) {
+  .article {
+    padding: 112px 0 96px;
+  }
+
+  .article__title {
+    font-size: 26px;
+  }
+
+  /* 写真は本文より少し広げる */
+  .article__img {
+    margin: 56px -80px;
+  }
+}
+
+/* 関係する宿（メインCTA） */
+.article-stay {
+  padding-bottom: 72px;
+}
+
+.article-stay__heading {
+  margin-bottom: 20px;
+  font-family: var(--font-mincho);
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--color-text-sub);
+}
+
+.article-stay__card {
+  display: grid;
+  grid-template-columns: 40% 1fr;
+  align-items: center;
+  gap: 20px;
+  padding: 16px;
+  border: 1px solid var(--color-line);
+  transition: border-color 0.4s;
+}
+
+.article-stay__card:hover {
+  border-color: var(--color-text);
+}
+
+.article-stay__img {
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+}
+
+.article-stay__img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1.6s ease;
+}
+
+.article-stay__card:hover .article-stay__img img {
+  transform: scale(1.04);
+}
+
+.article-stay__name {
+  margin: 4px 0 6px;
+  font-family: var(--font-mincho);
+  font-size: 16px;
+}
+
+.article-stay__more {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid currentColor;
+  font-family: var(--font-mincho);
+  font-size: 13px;
+  letter-spacing: 0.12em;
+}
+
+.article-stay__more::after {
+  content: "";
+  width: 20px;
+  height: 1px;
+  background-color: currentColor;
+  transition: width 0.4s;
+}
+
+.article-stay__card:hover .article-stay__more::after {
+  width: 32px;
+}
+
+.article-stay__all {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+  padding-top: 56px;
+  border-top: 1px solid var(--color-line);
+  text-align: center;
+}
+
+.article-stay__lead {
+  font-family: var(--font-mincho);
+}
+
+.article__back {
+  padding: 0 var(--gutter) 96px;
+  text-align: center;
+}
+
+@media (min-width: 900px) {
+  .article-stay {
+    padding-bottom: 96px;
+  }
+
+  .article-stay__card {
+    grid-template-columns: 240px 1fr;
+    gap: 40px;
+    padding: 20px;
+  }
+
+  .article-stay__img {
+    aspect-ratio: 4 / 3;
+  }
+
+  .article-stay__name {
+    font-size: 18px;
+  }
+
+  .article__back {
+    padding-bottom: 140px;
+  }
+}
+
+/* =========================================
+   GUIDE：リード文と目次（FVのすぐ下）
+========================================= */
+.guide-head {
+  padding-top: 48px;
+}
+
+.guide-head__lead {
+  font-family: var(--font-mincho);
+  line-height: 2.2;
+}
+
+@media (min-width: 900px) {
+  .guide-head {
+    padding-top: 80px;
+  }
+}
+
+.guide-toc {
+  margin-top: 40px;
+  border-top: 1px solid var(--color-line);
+}
+
+.guide-toc__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.guide-toc__link {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--color-line);
+  font-family: var(--font-mincho);
+  transition: opacity 0.4s;
+}
+
+.guide-toc__link::after {
+  content: "↓";
+  margin-left: auto;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--color-text-sub);
+}
+
+.guide-toc__link:hover {
+  opacity: 0.6;
+}
+
+.guide-toc__num {
+  font-family: var(--font-en);
+  font-size: 15px;
+  letter-spacing: 0.12em;
+  color: var(--color-text-sub);
+}
+
+@media (min-width: 900px) {
+  .guide-toc {
+    margin-top: 64px;
+  }
+
+  .guide-toc__list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0 40px;
+  }
+}
+
+/* ページ内リンクで飛んだとき、見出しが固定ヘッダーに隠れないようにする */
+.guide-section {
+  scroll-margin-top: var(--header-h);
+}
+
+/* 2つ目からは上の余白をなくしているので、飛んだときに見出しの上へ余白をとる */
+.guide-section + .guide-section {
+  padding-top: 0;
+  scroll-margin-top: calc(var(--header-h) + 48px);
+}
+
+/* =========================================
+   GUIDE：ご利用の流れ（PCは4つ横並び、スマホは縦並び）
+========================================= */
+.guide-flow {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.guide-flow__item {
+  position: relative;
+  padding: 0 0 40px 28px;
+  border-left: 1px solid var(--color-line);
+}
+
+.guide-flow__item:last-child {
+  padding-bottom: 0;
+}
+
+/* 線の上の丸 */
+.guide-flow__item::before {
+  content: "";
+  position: absolute;
+  top: 6px;
+  left: -4px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: var(--color-accent);
+}
+
+.guide-flow__num {
+  font-family: var(--font-en);
+  font-size: 14px;
+  letter-spacing: 0.16em;
+  color: var(--color-text-sub);
+}
+
+.guide-flow__title {
+  margin: 4px 0 12px;
+  font-family: var(--font-mincho);
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+}
+
+@media (min-width: 900px) {
+  .guide-flow {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 40px;
+  }
+
+  .guide-flow__item {
+    padding: 28px 0 0;
+    border-top: 1px solid var(--color-line);
+    border-left: none;
+  }
+
+  .guide-flow__item::before {
+    top: -4px;
+    left: 0;
+  }
+}
+
+/* =========================================
+   GUIDE：基本のご案内
+========================================= */
+.guide-basic {
+  display: grid;
+  gap: 56px;
+}
+
+.guide-basic__title {
+  margin-bottom: 16px;
+  font-family: var(--font-mincho);
+  font-size: 17px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+}
+
+.guide-basic__note {
+  margin-top: 16px;
+  font-size: 12px;
+  color: var(--color-text-sub);
+}
+
+/* 表はスマホで横にはみ出さないよう、必要なら横スクロール */
+.guide-table__wrap {
+  overflow-x: auto;
+}
+
+.guide-table {
+  width: 100%;
+  border-collapse: collapse;
+  white-space: nowrap;
+}
+
+.guide-table th,
+.guide-table td {
+  padding: 16px 12px 16px 0;
+  border-bottom: 1px solid var(--color-line);
+  font-weight: 300;
+  text-align: left;
+}
+
+.guide-table thead th {
+  border-top: 1px solid var(--color-line);
+  font-family: var(--font-mincho);
+  font-size: 12px;
+  color: var(--color-text-sub);
+}
+
+.guide-table tbody th {
+  font-family: var(--font-mincho);
+  font-weight: 400;
+}
+
+.guide-table tbody th a {
+  border-bottom: 1px solid var(--color-line);
+  transition: border-color 0.3s;
+}
+
+.guide-table tbody th a:hover {
+  border-color: currentColor;
+}
+
+@media (min-width: 900px) {
+  .guide-basic {
+    margin-left: 280px;
+    gap: 80px;
+  }
+
+  .guide-table th,
+  .guide-table td {
+    padding: 20px 24px 20px 0;
+  }
+}
+
+/* =========================================
+   GUIDE：よくある質問（details で開閉）
+========================================= */
+.faq {
+  display: grid;
+  gap: 56px;
+}
+
+.faq__cat {
+  margin-bottom: 8px;
+  font-family: var(--font-mincho);
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--color-text-sub);
+}
+
+.faq__item {
+  border-bottom: 1px solid var(--color-line);
+}
+
+.faq__group .faq__item:first-of-type {
+  border-top: 1px solid var(--color-line);
+}
+
+.faq__q {
+  position: relative;
+  display: block;
+  padding: 20px 40px 20px 0;
+  font-family: var(--font-mincho);
+  cursor: pointer;
+  list-style: none;
+}
+
+.faq__q::-webkit-details-marker {
+  display: none;
+}
+
+/* 右端の＋（開くと−になる） */
+.faq__q::before,
+.faq__q::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  width: 12px;
+  height: 1px;
+  background-color: currentColor;
+  transition: transform 0.4s;
+}
+
+.faq__q::after {
+  transform: rotate(90deg);
+}
+
+.faq__item[open] .faq__q::after {
+  transform: rotate(0deg);
+}
+
+.faq__a {
+  padding: 0 40px 24px 0;
+  color: var(--color-text-sub);
+}
+
+@media (min-width: 900px) {
+  .faq {
+    margin-left: 280px;
+    gap: 72px;
+  }
+
+  .faq__q {
+    padding: 24px 48px 24px 0;
+  }
+}
+
+/* =========================================
+   GUIDE：CTA
+========================================= */
+.guide-cta {
+  padding-top: 0;
+}
+
+.guide-cta__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  padding-top: 80px;
+  border-top: 1px solid var(--color-line);
+  text-align: center;
+}
+
+.guide-cta__text {
+  font-family: var(--font-mincho);
+  font-size: 18px;
+  letter-spacing: 0.16em;
+  line-height: 2;
+}
+
+@media (min-width: 900px) {
+  .guide-cta__inner {
+    padding-top: 120px;
+  }
+
+  .guide-cta__text {
+    font-size: 22px;
+  }
+}
+
+/* =========================================
+   RESERVE：予約フォーム
+   写真もナビも置かず、入力に集中してもらう
+========================================= */
+/* 予約ページにいるあいだは、ヘッダーの「予約する」を塗りにしておく */
+.header__reserve[aria-current="page"] {
+  background-color: var(--color-text);
+  color: var(--color-bg);
+}
+
+.reserve {
+  padding: 56px 0 96px;
+}
+
+.reserve__head {
+  margin-bottom: 40px;
+}
+
+.reserve__link {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* 入力の前に、架空のサイトで送信されないことを伝える */
+.reserve__demo {
+  grid-column: 1 / -1;
+  padding: 12px 16px;
+  border-left: 2px solid var(--color-accent);
+  background-color: #efece4;
+  font-size: 12px;
+  color: var(--color-text-sub);
+}
+
+.reserve__guide {
+  margin-top: 56px;
+  font-size: 13px;
+  color: var(--color-text-sub);
+  text-align: center;
+}
+
+@media (min-width: 900px) {
+  .reserve {
+    padding: 112px 0 140px;
+  }
+
+  .reserve__head {
+    margin-bottom: 56px;
+  }
+}
+
+/* ステップ表示 */
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin: 0 0 48px;
+  padding: 0;
+  list-style: none;
+}
+
+.steps__item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-top: 12px;
+  border-top: 2px solid var(--color-line);
+  font-family: var(--font-mincho);
+  font-size: 13px;
+  color: var(--color-text-sub);
+}
+
+.steps__num {
+  font-family: var(--font-en);
+  font-size: 13px;
+  letter-spacing: 0.16em;
+}
+
+/* いまのステップと、終わったステップ */
+.steps__item[aria-current="step"],
+.steps__item.is-done {
+  border-top-color: var(--color-accent);
+  color: var(--color-text);
+}
+
+@media (min-width: 900px) {
+  .steps {
+    margin-bottom: 72px;
+  }
+
+  .steps__item {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 16px;
+    font-size: 15px;
+  }
+}
+
+/* 入力：PCはフォームを左、予約内容のまとめを右に置く */
+.reserve-form {
+  display: grid;
+  gap: 48px;
+}
+
+.reserve-form__fields {
+  display: grid;
+  gap: 48px;
+}
+
+.reserve-form__group {
+  display: grid;
+  gap: 28px;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.reserve-form__legend {
+  width: 100%;
+  margin-bottom: 4px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-line);
+  font-family: var(--font-mincho);
+  font-size: 17px;
+  letter-spacing: 0.12em;
+}
+
+@media (min-width: 900px) {
+  .reserve-form {
+    grid-template-columns: 1fr 320px;
+    grid-template-areas:
+      "fields summary"
+      "actions summary";
+    column-gap: 72px;
+    row-gap: 56px;
+  }
+
+  .reserve-form__fields {
+    grid-area: fields;
+  }
+
+  .summary {
+    grid-area: summary;
+    align-self: start;
+    position: sticky;
+    top: calc(var(--header-h) + 24px);
+  }
+
+  .reserve-form__actions {
+    grid-area: actions;
+  }
+}
+
+/* 入力欄 */
+.field {
+  display: grid;
+  gap: 8px;
+}
+
+.field__label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.field__badge {
+  padding: 0 8px;
+  background-color: var(--color-accent);
+  color: var(--color-bg);
+  font-size: 10px;
+  line-height: 18px;
+}
+
+.field__badge--optional {
+  background: none;
+  border: 1px solid var(--color-line);
+  color: var(--color-text-sub);
+}
+
+.field__control {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid var(--color-line);
+  border-radius: 0;
+  background-color: #fbfaf7;
+  color: var(--color-text);
+  font: inherit;
+  font-size: 16px;
+  transition: border-color 0.3s;
+  appearance: none;
+}
+
+/* select の右端に矢印 */
+select.field__control {
+  padding-right: 40px;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--color-text-sub) 50%),
+    linear-gradient(135deg, var(--color-text-sub) 50%, transparent 50%);
+  background-position: calc(100% - 20px) 50%, calc(100% - 15px) 50%;
+  background-size: 5px 5px;
+  background-repeat: no-repeat;
+}
+
+.field__control--textarea {
+  resize: vertical;
+  line-height: 1.8;
+}
+
+.field__control::placeholder {
+  color: #aaa69c;
+}
+
+.field__control:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.field__control[aria-invalid="true"] {
+  border-color: var(--color-error);
+}
+
+.field__note {
+  font-size: 12px;
+  color: var(--color-text-sub);
+}
+
+.field__error {
+  font-size: 13px;
+  color: var(--color-error);
+}
+
+.field__error:empty {
+  display: none;
+}
+
+.field__pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.field__sub {
+  display: grid;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--color-text-sub);
+}
+
+/* 同意のチェック */
+.checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.checkbox__input {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  margin: 3px 0 0;
+  accent-color: var(--color-accent);
+}
+
+.checkbox__input[aria-invalid="true"] {
+  outline: 1px solid var(--color-error);
+  outline-offset: 2px;
+}
+
+.reserve-form__actions {
+  display: grid;
+  gap: 32px;
+  justify-items: center;
+}
+
+.reserve-form__submit {
+  width: 100%;
+  max-width: 400px;
+  border: none;
+  cursor: pointer;
+}
+
+@media (min-width: 900px) {
+  .reserve-form__actions {
+    justify-items: start;
+  }
+}
+
+/* 予約内容のまとめ */
+.summary {
+  padding: 24px;
+  background-color: #efece4;
+}
+
+.summary__img {
+  aspect-ratio: 3 / 2;
+  margin-bottom: 16px;
+  overflow: hidden;
+  background-color: var(--color-line);
+}
+
+.summary__img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.summary__stay {
+  margin-bottom: 12px;
+  font-family: var(--font-mincho);
+  font-size: 15px;
+}
+
+.summary__list {
+  margin: 0 0 20px;
+  font-size: 13px;
+}
+
+.summary__row {
+  display: grid;
+  grid-template-columns: 3em 1fr;
+  gap: 12px;
+  padding: 6px 0;
+}
+
+.summary__row dt {
+  color: var(--color-text-sub);
+}
+
+.summary__row dd {
+  margin: 0;
+}
+
+.summary__total {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-line);
+}
+
+.summary__total-label {
+  font-size: 13px;
+}
+
+.summary__total-yen {
+  font-family: var(--font-en);
+  font-size: 26px;
+  letter-spacing: 0.04em;
+}
+
+.summary__note {
+  margin-top: 12px;
+  font-size: 11px;
+  line-height: 1.8;
+  color: var(--color-text-sub);
+}
+
+/* 確認・完了 */
+.reserve-confirm,
+.reserve-done {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.reserve-panel__title {
+  margin-bottom: 32px;
+  font-family: var(--font-mincho);
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+}
+
+.reserve-panel__title:focus {
+  outline: none;
+}
+
+.reserve-confirm__total {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 24px;
+  font-family: var(--font-mincho);
+}
+
+.reserve-confirm__note {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--color-text-sub);
+}
+
+.reserve-confirm__yen {
+  font-family: var(--font-en);
+  font-size: 30px;
+}
+
+.reserve-confirm__actions {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 16px;
+  margin-top: 48px;
+}
+
+.reserve-confirm__actions .btn {
+  min-width: 0;
+  cursor: pointer;
+}
+
+.reserve-done__number {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 20px;
+  font-size: 13px;
+  color: var(--color-text-sub);
+}
+
+.reserve-done__number span {
+  font-family: var(--font-en);
+  font-size: 24px;
+  letter-spacing: 0.12em;
+  color: var(--color-text);
+}
+
+.reserve-done__text {
+  margin-bottom: 40px;
+}
+
+.reserve-done__links {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+  margin-top: 48px;
+}
+
+.reserve-done__demo {
+  margin-top: 40px;
+  font-size: 12px;
+  color: var(--color-text-sub);
+  text-align: center;
+}
+
+@media (min-width: 900px) {
+  .reserve-panel__title {
+    font-size: 24px;
+  }
+
+  .reserve-confirm__actions {
+    flex-direction: row;
+    justify-content: center;
+  }
+}
+
+/* =========================================
+   フッター
+========================================= */
+.footer {
+  background-color: var(--color-dark);
+  color: var(--color-dark-text);
+}
+
+.footer__inner {
+  display: grid;
+  gap: 48px;
+  max-width: var(--inner);
+  margin: 0 auto;
+  padding: 72px var(--gutter) 56px;
+}
+
+.footer__logo {
+  font-family: var(--font-en);
+  font-size: 36px;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  line-height: 1;
+}
+
+.footer__catch {
+  margin-top: 14px;
+  font-family: var(--font-mincho);
+  font-size: 13px;
+  color: var(--color-dark-sub);
+}
+
+.footer__heading {
+  margin-bottom: 16px;
+  font-family: var(--font-en);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  color: var(--color-dark-sub);
+}
+
+.footer__address {
+  font-size: 14px;
+  line-height: 2;
+}
+
+.footer__contact-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0 0 16px;
+}
+
+.footer__contact-row {
+  display: flex;
+  gap: 16px;
+}
+
+.footer__contact-row dt {
+  flex-shrink: 0;
+  width: 3em;
+  font-family: var(--font-en);
+  letter-spacing: 0.16em;
+  color: var(--color-dark-sub);
+}
+
+.footer__contact-row dd {
+  margin: 0;
+}
+
+.footer__note {
+  display: block;
+  font-size: 12px;
+  color: var(--color-dark-sub);
+}
+
+.footer__inline-link {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.footer__address a {
+  transition: opacity 0.3s;
+}
+
+.footer__address a:hover {
+  opacity: 0.6;
+}
+
+.footer__copy {
+  max-width: var(--inner);
+  margin: 0 auto;
+  padding: 20px var(--gutter) 28px;
+  border-top: 1px solid var(--color-dark-line);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 24px;
+  font-family: var(--font-en);
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  color: var(--color-dark-sub);
+}
+
+/* 架空のサイトであることを、全ページのフッターに常に表示する */
+.footer__demo {
+  max-width: var(--inner);
+  margin: 0 auto;
+  padding: 0 var(--gutter) 20px;
+  font-size: 11px;
+  line-height: 1.8;
+  color: var(--color-dark-sub);
+}
+
+.footer__credit a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+@media (min-width: 900px) {
+  /* ロゴを左、連絡先を右 */
+  .footer__inner {
+    grid-template-columns: 1.4fr 1fr;
+    padding-top: 96px;
+    padding-bottom: 72px;
+  }
+}

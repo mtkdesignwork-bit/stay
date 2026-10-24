@@ -1,0 +1,7 @@
+# 公開しないファイル（Vercel にアップしても配信されない）
+# 要件定義や写真のメモ
+docs/
+# TOPのFVの原本（サイトでは hero.webp を使っている）
+assets/images/top/hero.jpg
+# Mac が自動で作るファイル
+.DS_Store
