@@ -895,24 +895,43 @@ body.is-menu-open {
   gap: 56px;
 }
 
-/* 見出しの下の写真（スマホは横長、PCは左の列に縦長） */
-.top-concept__img {
+/* 見出しの下の写真2枚。1枚目に2枚目を重ね、右下にずらす（下にずらした分だけ高さをとる） */
+.top-concept__imgs {
+  position: relative;
   margin-top: 32px;
-  aspect-ratio: 3 / 2;
+  padding-bottom: 24%;
+}
+
+.top-concept__img {
+  width: 66%;
+  aspect-ratio: 3 / 4;
   overflow: hidden;
+}
+
+.top-concept__img--sub {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 48%;
 }
 
 .top-concept__img img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  /* 波紋の中心が写真の右寄りにあるので、縦に切るときは右側を残す */
+  object-position: 65% center;
+}
+
+/* 霧の湖は、左の小島と木々が入るように寄せる */
+.top-concept__img--sub img {
+  object-position: 30% center;
 }
 
 .top-concept__body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 72px;
 }
 
 .top-concept__text {
@@ -931,34 +950,37 @@ body.is-menu-open {
   letter-spacing: 0.32em;
 }
 
+/* 「コンセプトを読む」は写真と文章の下、中央に置く */
+.top-concept__more {
+  grid-column: 1 / -1;
+  text-align: center;
+}
+
 @media (min-width: 900px) {
   .top-concept__inner {
     grid-template-columns: 280px 1fr;
   }
 
-  .top-concept__img {
+  /* 2枚目が左の列から右へはみ出す */
+  .top-concept__imgs {
     margin-top: 56px;
-    aspect-ratio: 3 / 4;
+    padding-bottom: 96px;
   }
 
-  /* 波紋の中心が写真の右寄りにあるので、縦に切るときは右側を残す */
-  .top-concept__img img {
-    object-position: 65% center;
+  .top-concept__img {
+    width: 100%;
+  }
+
+  .top-concept__img--sub {
+    right: auto;
+    left: 70%;
+    width: 78%;
   }
 
   .top-concept__body {
     flex-direction: row-reverse;
-    align-items: flex-end;
     justify-content: flex-start;
-    gap: 160px;
-    /* 下にずらしたリンクの分、次のセクションとの間隔を保つ */
-    padding-bottom: 64px;
     padding-right: 8%;
-  }
-
-  /* 文章の最後の行よりさらに下に置き、文章との間をあける */
-  .top-concept__body .text-link {
-    margin-bottom: -64px;
   }
 
   .top-concept__text {
@@ -967,19 +989,6 @@ body.is-menu-open {
 
   .top-concept__catch {
     font-size: 24px;
-  }
-}
-
-/* PCでも幅が狭いと、文章の横にリンクが入りきらず細く折り返すので、リンクを文章の下に置く */
-@media (min-width: 900px) and (max-width: 1199px) {
-  .top-concept__body {
-    flex-direction: column;
-    gap: 72px;
-    padding-bottom: 0;
-  }
-
-  .top-concept__body .text-link {
-    margin-bottom: 0;
   }
 }
 
