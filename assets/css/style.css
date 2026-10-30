@@ -742,7 +742,7 @@ body.is-menu-open {
   inset: 0;
   background:
     linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0) 200px),
-    rgba(0, 0, 0, 0.32);
+    rgba(0, 0, 0, 0.42);
 }
 
 .hero__logo {
