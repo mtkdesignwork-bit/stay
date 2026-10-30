@@ -570,23 +570,6 @@ if (fixedCta) {
   updateFixedCta();
 }
 
-// メインビジュアル：今日の日付と時刻
-const clock = document.querySelector('.js-clock');
-
-if (clock) {
-  const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
-  const pad = (n) => String(n).padStart(2, '0');
-
-  const renderClock = () => {
-    const now = new Date();
-    clock.textContent = `${now.getFullYear()}.${pad(now.getMonth() + 1)}.${pad(now.getDate())} ${days[now.getDay()]} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
-    clock.dateTime = now.toISOString();
-  };
-
-  renderClock();
-  setInterval(renderClock, 30000);
-}
-
 // スマホ用メニューの開閉
 const menuBtn = document.querySelector('.menu-btn');
 const gnav = document.getElementById('gnav');
