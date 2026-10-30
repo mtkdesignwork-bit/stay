@@ -719,13 +719,20 @@ body.is-menu-open {
   mask-image: linear-gradient(to top, transparent calc(var(--progress) * 60%), #000 calc(var(--progress) * 100% + 0.1%));
 }
 
+/* 写真は重ねて置き、is-active の1枚だけをゆっくり浮かび上がらせる（切り替えは main.js） */
 .hero__media img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* スマホは左の木の壁と行灯が入るように寄せる（キャッチコピーを暗い壁の上に置くため） */
-  object-position: 15% center;
+  opacity: 0;
   transform: translateY(calc(var(--progress) * 12%)) scale(1.05);
+  transition: opacity 2s ease;
+}
+
+.hero__media img.is-active {
+  opacity: 1;
 }
 
 /* 全体に薄く黒を重ね、上端は少し濃くしてヘッダーの白文字を読みやすくする */
@@ -842,10 +849,6 @@ body.is-menu-open {
 
   .hero__bar {
     padding-bottom: 40px;
-  }
-
-  .hero__media img {
-    object-position: center;
   }
 
   /* PCは、左の縦書きコピーの書き出しを中央のサブコピーの上端に揃える

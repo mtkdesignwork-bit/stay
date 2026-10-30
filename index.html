@@ -77,8 +77,15 @@
 
     <!-- 1. メインビジュアル -->
     <section class="hero js-hero">
-      <div class="hero__media">
-        <img src="assets/images/top/hero.webp" srcset="assets/images/top/hero-750.webp 750w, assets/images/top/hero-1080.webp 1080w, assets/images/top/hero-1500.webp 1500w, assets/images/top/hero.webp 1672w" sizes="100vw" fetchpriority="high" alt="大きな窓の向こうに霧のかかる山と森が広がる客室" width="1672" height="941">
+      <!-- 1枚目は湖。2枚目からの宿の写真は、ページの読み込みが終わってから main.js で読み込む（data-srcset → srcset） -->
+      <div class="hero__media js-hero-slides">
+        <img class="hero__slide is-active" src="assets/images/top/hero-lake.webp" srcset="assets/images/top/hero-lake-750.webp 750w, assets/images/top/hero-lake-1080.webp 1080w, assets/images/top/hero-lake-1500.webp 1500w, assets/images/top/hero-lake.webp 1672w" sizes="100vw" fetchpriority="high" alt="霧に包まれた夜明けの湖と、水面に映る山々" width="1672" height="941">
+        <img class="hero__slide" data-srcset="assets/images/stays/biei/hero-750.webp 750w, assets/images/stays/biei/hero-1080.webp 1080w, assets/images/stays/biei/hero.webp 1500w" sizes="100vw" alt="白樺の森の中に建つ高床の木の小屋" width="1500" height="2250">
+        <img class="hero__slide" data-srcset="assets/images/stays/yatsugatake/hero-750.webp 750w, assets/images/stays/yatsugatake/hero-1080.webp 1080w, assets/images/stays/yatsugatake/hero-1500.webp 1500w, assets/images/stays/yatsugatake/hero.webp 2000w" sizes="100vw" alt="煙突から煙が上がる、森の中の小屋" width="2000" height="1181">
+        <img class="hero__slide" data-srcset="assets/images/stays/asagiri/hero-750.webp 750w, assets/images/stays/asagiri/hero-1080.webp 1080w, assets/images/stays/asagiri/hero-1500.webp 1500w, assets/images/stays/asagiri/hero.webp 2000w" sizes="100vw" alt="夕暮れの草原の向こうにそびえる富士山" width="2000" height="1333">
+        <img class="hero__slide" data-srcset="assets/images/stays/setouchi/hero-750.webp 750w, assets/images/stays/setouchi/hero-1080.webp 1080w, assets/images/stays/setouchi/hero-1500.webp 1500w, assets/images/stays/setouchi/hero.webp 2000w" sizes="100vw" alt="海辺の草原に建つ白い家" width="2000" height="1333">
+        <img class="hero__slide" data-srcset="assets/images/stays/aso/hero-750.webp 750w, assets/images/stays/aso/hero-1080.webp 1080w, assets/images/stays/aso/hero.webp 1500w" sizes="100vw" alt="緑の向こうに見えるドームテント" width="1500" height="2105">
+        <img class="hero__slide" data-srcset="assets/images/stays/yanbaru/hero-750.webp 750w, assets/images/stays/yanbaru/hero-1080.webp 1080w, assets/images/stays/yanbaru/hero.webp 1500w" sizes="100vw" alt="森に面したプライベートプール" width="1500" height="2249">
       </div>
       <p class="hero__catch">
         <span class="hero__catch-line">心がほどけていく、</span>

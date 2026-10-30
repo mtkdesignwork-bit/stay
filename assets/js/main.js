@@ -91,6 +91,30 @@ if (hero && !prefersReducedMotion) {
   updateHero();
 }
 
+// メインビジュアル：湖の写真のあと、宿の写真を6秒ごとにゆっくり切り替える
+// （宿の写真はページの読み込みが終わってから読み込み、最初の表示を遅くしない。動きを減らす設定の人には湖の1枚だけ）
+const heroSlides = document.querySelector('.js-hero-slides');
+
+if (heroSlides && !prefersReducedMotion) {
+  const slides = [...heroSlides.querySelectorAll('img')];
+  let current = 0;
+
+  window.addEventListener('load', () => {
+    slides.forEach((img) => {
+      if (img.dataset.srcset) img.srcset = img.dataset.srcset;
+    });
+
+    setInterval(() => {
+      const next = (current + 1) % slides.length;
+      // まだ届いていない写真は飛ばさず、届くまで今の写真のまま待つ
+      if (!slides[next].complete || !slides[next].naturalWidth) return;
+      slides[current].classList.remove('is-active');
+      slides[next].classList.add('is-active');
+      current = next;
+    }, 6000);
+  }, { once: true });
+}
+
 // ヘッダー：メインビジュアル（TOP）や各ページの写真のFVを過ぎたら透明をやめる
 const header = document.querySelector('.js-header');
 const overlayArea = hero || document.querySelector('.js-page-hero');
